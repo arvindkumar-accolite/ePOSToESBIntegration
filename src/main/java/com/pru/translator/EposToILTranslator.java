@@ -1,4 +1,4 @@
-package com.prud.translator;
+package com.pru.translator;
 
 import java.io.StringWriter;
 import java.util.Map;
@@ -8,13 +8,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.pru.model.il.CLICRPIREC;
+import com.pru.model.il.MSPContext;
+import com.pru.model.il.RequestParameter;
+import com.pru.model.il.RequestParameters;
 import com.prud.constant.IntegrationConstants;
 import com.prud.mapper.impl.NewBusinessPopulator;
 import com.prud.mapper.impl.OrikaModelMapperImpl;
-import com.prud.model.il.CLICRPIREC;
-import com.prud.model.il.MSPContext;
-import com.prud.model.il.RequestParameter;
-import com.prud.model.il.RequestParameters;
 import com.prud.model.middleware.ClientDetails;
 
 public class EposToILTranslator {

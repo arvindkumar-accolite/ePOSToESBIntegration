@@ -1,4 +1,4 @@
-package com.prud.translator;
+package com.pru.translator;
 
 import java.io.File;
 import java.io.IOException;

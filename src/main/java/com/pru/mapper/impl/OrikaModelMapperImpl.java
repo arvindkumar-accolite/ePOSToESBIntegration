@@ -1,4 +1,4 @@
-package com.prud.mapper.impl;
+package com.pru.mapper.impl;
 
 import java.util.Map;
 

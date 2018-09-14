@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -43,6 +46,7 @@ import com.pru.model.middleware.SFLDetails;
 import com.pru.model.middleware.SpecialTermDetails;
 import com.pru.model.middleware.SpecialTerms;
 import com.pru.translator.JsonValueExtractor;
+import com.pru.constant.IntegrationConstants;
 
 public class NewBusinessPopulator {
 	private JsonValueExtractor extractor;
@@ -145,7 +149,7 @@ public class NewBusinessPopulator {
 		bankDetails.setBankKey("");
 		bankDetails.setClientSelectionWithBankDetails("");
 		bankDetails.setCurrencyCode("");
-		bankDetails.setDatefrom("2018-09-06T00:00:00.000Z");
+		//bankDetails.setDatefrom("2018-09-06T00:00:00.000Z");
 		bankDetails.setFactoringHouse("");
 		return bankDetails;
 	}
@@ -165,7 +169,7 @@ public class NewBusinessPopulator {
 		beneficiaryDetail.setBeneficiaryPercentage(new BigDecimal("0"));
 		beneficiaryDetail.setBeneficiaryType("");
 		beneficiaryDetail.setClientRelationship("");
-		beneficiaryDetail.setEffectiveDate("2018-09-06T00:00:00.000Z");
+		//beneficiaryDetail.setEffectiveDate("2018-09-06T00:00:00.000Z");
 		return beneficiaryDetail;
 	}
 
@@ -225,15 +229,14 @@ public class NewBusinessPopulator {
 		ContractDetails contractDetails = new ContractDetails();
 		contractDetails.setAccountType("AG");
 		contractDetails.setAgentNumber(extractor.fetchString(propertyMap.get("newbusiness.contract.agentNumber")));
-		contractDetails
-				.setBillingCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.billingCurrency")));
-		// int billingFrequency =
-		// extractor.fetchInt((propertyMap.get("newbusiness.contract.billingFrequency")));
-
+		contractDetails.setBillingCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.billingCurrency")));
+		
+		// int billingFrequency = extractor.fetchInt((propertyMap.get("newbusiness.contract.billingFrequency")));
 		// contractDetails.setBillingfrequency(String.format("%02d", billingFrequency));
-		contractDetails.setBillingfrequency("01");
-		contractDetails.setBillingRenewalDate("2019-09-04T00:00:00.000Z");
-		contractDetails.setBillingRenewalIndicator(new BigInteger("00"));
+		
+		contractDetails.setBillingfrequency("12");
+		//contractDetails.setBillingRenewalDate("2019-09-04T00:00:00.000Z");
+		contractDetails.setBillingRenewalIndicator(new BigInteger("01"));
 		contractDetails
 				.setContractCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.contractcurrency")));
 		contractType = extractor.fetchString(propertyMap.get("newbusiness.contract.contractType"));
@@ -251,8 +254,8 @@ public class NewBusinessPopulator {
 				contractDetails.setRegister("CA1");
 			}
 		}
-
-		contractDetails.setProposalDate("2018-09-03T00:00:00.000Z");
+		SimpleDateFormat sdf = new SimpleDateFormat(IntegrationConstants.CLTDOBX_FORMAT);
+		contractDetails.setProposalDate(sdf.format(new Date()));
 		contractDetails.setContractHDREntId("");
 		contractDetails.setContractNumber("");
 
@@ -329,11 +332,11 @@ public class NewBusinessPopulator {
 		}
 
 		coverageDetails.setPremiumCessationAge(new BigInteger("00"));
-		coverageDetails.setPremiumCessationDate("2028-09-06T00:00:00.000Z");
+		//coverageDetails.setPremiumCessationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setPremiumCessationTerm(new BigInteger("10"));
-		coverageDetails.setReserveUnitsAllocationDate("2028-09-06T00:00:00.000Z");
+		//coverageDetails.setReserveUnitsAllocationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setRiskCessationAge(new BigInteger("00"));
-		coverageDetails.setRiskCessationDate("2028-09-06T00:00:00.000Z");
+		//coverageDetails.setRiskCessationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setRiskCessationTerm(new BigInteger("10"));
 		coverageDetails.setSumInsured(
 				convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.coverage.sumInsured"))));
@@ -448,9 +451,8 @@ public class NewBusinessPopulator {
 
 	private LifeDetails populateLifeDetails() {
 		LifeDetails lifeDetails = new LifeDetails();
-		// BigInteger age =
-		// convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.lives.anbAge")));
-		lifeDetails.setAnbAge(convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.lives.anbAge"))));
+		lifeDetails.setAnbAge(new BigInteger("00"));
+		//lifeDetails.setAnbAge(convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.lives.anbAge"))));
 
 		lifeDetails.setDateOfBirth(extractor.fetchString(propertyMap.get("newbusiness.lives.dateOfBirth")));
 		lifeDetails.setHeight(convertHeightInCms(extractor.fetchString(propertyMap.get("newbusiness.lives.hight"))));
@@ -487,7 +489,7 @@ public class NewBusinessPopulator {
 		mandateDetails.setBankAccountKey("");
 		mandateDetails.setBankKey("");
 		mandateDetails.setClientNumber("");
-		mandateDetails.setEffectiveDate("2018-09-06T00:00:00.000Z");
+		//mandateDetails.setEffectiveDate("2018-09-06T00:00:00.000Z");
 		mandateDetails.setFactoringHouse("");
 		mandateDetails.setMandateId("");
 		mandateDetails.setMandateRefNumber("");
@@ -529,7 +531,7 @@ public class NewBusinessPopulator {
 		premiumRCTDetails.setRecievedFromCode("");
 		premiumRCTDetails.setRecievedFromNumber("");
 		premiumRCTDetails.getSfldetails().add(populateSFLDetails());
-		premiumRCTDetails.setTranDate("2018-09-06T00:00:00.000Z");
+		//premiumRCTDetails.setTranDate("2018-09-06T00:00:00.000Z");
 		return premiumRCTDetails;
 	}
 
@@ -544,14 +546,14 @@ public class NewBusinessPopulator {
 	private RiderDetails populateRiderDetails() {
 		RiderDetails riderDetails = new RiderDetails();
 		riderDetails.setCoverageOrRiderInstalmentAmount(new BigDecimal("0"));
-		riderDetails.setCoverageOrRiderTable("");
+		riderDetails.setCoverageOrRiderTable("WOPL");
 		riderDetails.setMortalityClass("");
-		riderDetails.setPremiumCessationAge(new BigInteger("0"));
-		riderDetails.setPremiumCessationTerm(new BigInteger("0"));
+		riderDetails.setPremiumCessationAge(new BigInteger("00"));
+		riderDetails.setPremiumCessationTerm(new BigInteger("10"));
 		riderDetails.setRiderId("");
 		riderDetails.setRiderParent("");
-		riderDetails.setRiskCessationAge(new BigInteger("0"));
-		riderDetails.setRiskCessationTerm(new BigInteger("0"));
+		riderDetails.setRiskCessationAge(new BigInteger("00"));
+		riderDetails.setRiskCessationTerm(new BigInteger("10"));
 		riderDetails.setSumInsured(new BigInteger("0"));
 		return riderDetails;
 	}
@@ -584,4 +586,5 @@ public class NewBusinessPopulator {
 		specialTermDetails.setSpecialTermParent("");
 		return specialTermDetails;
 	}
+
 }

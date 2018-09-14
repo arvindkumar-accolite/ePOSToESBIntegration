@@ -1,4 +1,4 @@
-package com.prud.constant;
+package com.pru.constant;
 
 public class IntegrationConstants {
 	private IntegrationConstants() {

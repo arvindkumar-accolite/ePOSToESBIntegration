@@ -1,4 +1,4 @@
-package com.prud.mapper.impl;
+package com.pru.mapper.impl;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.pru.model.il.CLICRPIREC;
+import com.pru.model.il.CLICRPIREC.CLTDOBX;
 import com.prud.constant.IntegrationConstants;
-import com.prud.model.il.CLICRPIREC;
-import com.prud.model.il.CLICRPIREC.CLTDOBX;
 
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;

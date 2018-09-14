@@ -1,8 +1,8 @@
 package com.pru.translator;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
@@ -15,15 +15,27 @@ public class JsonValueExtractor {
 	}
 
 	public String fetchString(String jsonPath) {
-		return jsonContext.read(jsonPath);
+		try {
+			return jsonContext.read(jsonPath);
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	public Integer fetchInt(String jsonPath) {
-		return jsonContext.read(jsonPath);
+		try {
+			return jsonContext.read(jsonPath);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
-	public boolean fetchBoolean(String jsonPath) {
-		return jsonContext.read(jsonPath);
+	public Boolean fetchBoolean(String jsonPath) {
+		try {
+			return jsonContext.read(jsonPath);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public List<String> fetchListOfString(String jsonPath) {

@@ -1,6 +1,6 @@
-package com.prud.mapper.impl;
+package com.pru.mapper.impl;
 
-import com.prud.model.jpath.ClientJpathModel;
+import com.pru.model.jpath.ClientJpathModel;
 import com.prud.model.middleware.ClientDetails;
 import com.prud.translator.JsonValueExtractor;
 
