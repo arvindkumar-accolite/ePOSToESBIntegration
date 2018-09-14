@@ -1,16 +1,15 @@
 package com.pru.mapper.impl;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.Map;
 
-import com.pru.constant.ConfigConstants;
+import org.apache.flink.api.java.utils.ParameterTool;
+
+import com.pru.config.PropertyLoader;
+import com.pru.constant.IntegrationConstants;
 import com.pru.model.middleware.ApplyCashDetails;
 import com.pru.model.middleware.AssigneeDetails;
 import com.pru.model.middleware.Assignees;
@@ -41,45 +40,13 @@ import com.pru.translator.JsonValueExtractor;
 
 public class NewBusinessPopulator {
 	private JsonValueExtractor extractor;
-	private static Properties newBuisnessProperties;
-	private static HashMap<String, String> propertyMap = null;
+	private static Map<String, String> propertyMap;
 	private static String contractType = null;
-	
-	static {
-		newBuisnessProperties = new Properties();
-		InputStream input = null;
-		try {
 
-			input = new FileInputStream(ConfigConstants.NBS_MAPPING_PROPERTIES);
-			newBuisnessProperties.load(input);
-			input.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		propertyMap = new HashMap<String, String>();
-		for (Entry<Object, Object> entry : newBuisnessProperties.entrySet()) {
-			propertyMap.put((String) entry.getKey(), (String) entry.getValue());
-		}
-		// System.out.println(propertyMap);
+	public NewBusinessPopulator() {
+		ParameterTool policyProposalPropConfig = PropertyLoader.getPolicyProposalPropConfig();
+		propertyMap = policyProposalPropConfig.toMap();
 	}
-	/*
-	 * public static void main(String[] args) throws JsonGenerationException,
-	 * JsonMappingException, IOException { String content = new
-	 * String(Files.readAllBytes(Paths.get("./resources/newJson.txt")));
-	 * NewBusinessPopulator nbspop = new NewBusinessPopulator(); ObjectMapper mapper
-	 * = new ObjectMapper(); NewBusinessModel nbsModel =
-	 * nbspop.buildNewBusiness(content); System.out.println("meeee");
-	 * 
-	 * // ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-	 * // String json = ow.writeValueAsString(nbsModel); // Object to JSON in file
-	 * // String json = mapper.writeValueAsString(nbsModel); //
-	 * System.out.println(json); // Object to JSON in String
-	 * 
-	 * String jsonInString = mapper.writeValueAsString(nbsModel);
-	 * System.out.println(jsonInString);
-	 * 
-	 * }
-	 */
 
 	public NewBusinessModel buildNewBusiness(String json) {
 		NewBusinessModel nbsModel = new NewBusinessModel();
@@ -140,7 +107,7 @@ public class NewBusinessPopulator {
 		bankDetails.setBankKey("");
 		bankDetails.setClientSelectionWithBankDetails("");
 		bankDetails.setCurrencyCode("");
-		//bankDetails.setDatefrom("2018-09-06T00:00:00.000Z");
+		// bankDetails.setDatefrom("2018-09-06T00:00:00.000Z");
 		bankDetails.setFactoringHouse("");
 		return bankDetails;
 	}
@@ -160,7 +127,7 @@ public class NewBusinessPopulator {
 		beneficiaryDetail.setBeneficiaryPercentage(new BigDecimal("0"));
 		beneficiaryDetail.setBeneficiaryType("");
 		beneficiaryDetail.setClientRelationship("");
-		//beneficiaryDetail.setEffectiveDate("2018-09-06T00:00:00.000Z");
+		// beneficiaryDetail.setEffectiveDate("2018-09-06T00:00:00.000Z");
 		return beneficiaryDetail;
 	}
 
@@ -220,13 +187,15 @@ public class NewBusinessPopulator {
 		ContractDetails contractDetails = new ContractDetails();
 		contractDetails.setAccountType("AG");
 		contractDetails.setAgentNumber(extractor.fetchString(propertyMap.get("newbusiness.contract.agentNumber")));
-		contractDetails.setBillingCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.billingCurrency")));
-		
-		// int billingFrequency = extractor.fetchInt((propertyMap.get("newbusiness.contract.billingFrequency")));
+		contractDetails
+				.setBillingCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.billingCurrency")));
+
+		// int billingFrequency =
+		// extractor.fetchInt((propertyMap.get("newbusiness.contract.billingFrequency")));
 		// contractDetails.setBillingfrequency(String.format("%02d", billingFrequency));
-		
+
 		contractDetails.setBillingfrequency("12");
-		//contractDetails.setBillingRenewalDate("2019-09-04T00:00:00.000Z");
+		// contractDetails.setBillingRenewalDate("2019-09-04T00:00:00.000Z");
 		contractDetails.setBillingRenewalIndicator(new BigInteger("01"));
 		contractDetails
 				.setContractCurrency(extractor.fetchString(propertyMap.get("newbusiness.contract.contractcurrency")));
@@ -245,7 +214,7 @@ public class NewBusinessPopulator {
 				contractDetails.setRegister("CA1");
 			}
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat(ConfigConstants.CLTDOBX_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(IntegrationConstants.CLTDOBX_FORMAT);
 		contractDetails.setProposalDate(sdf.format(new Date()));
 		contractDetails.setContractHDREntId("");
 		contractDetails.setContractNumber("");
@@ -323,11 +292,11 @@ public class NewBusinessPopulator {
 		}
 
 		coverageDetails.setPremiumCessationAge(new BigInteger("00"));
-		//coverageDetails.setPremiumCessationDate("2028-09-06T00:00:00.000Z");
+		// coverageDetails.setPremiumCessationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setPremiumCessationTerm(new BigInteger("10"));
-		//coverageDetails.setReserveUnitsAllocationDate("2028-09-06T00:00:00.000Z");
+		// coverageDetails.setReserveUnitsAllocationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setRiskCessationAge(new BigInteger("00"));
-		//coverageDetails.setRiskCessationDate("2028-09-06T00:00:00.000Z");
+		// coverageDetails.setRiskCessationDate("2028-09-06T00:00:00.000Z");
 		coverageDetails.setRiskCessationTerm(new BigInteger("10"));
 		coverageDetails.setSumInsured(
 				convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.coverage.sumInsured"))));
@@ -443,7 +412,7 @@ public class NewBusinessPopulator {
 	private LifeDetails populateLifeDetails() {
 		LifeDetails lifeDetails = new LifeDetails();
 		lifeDetails.setAnbAge(new BigInteger("00"));
-		//lifeDetails.setAnbAge(convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.lives.anbAge"))));
+		// lifeDetails.setAnbAge(convertIntToBigInteger(extractor.fetchInt(propertyMap.get("newbusiness.lives.anbAge"))));
 
 		lifeDetails.setDateOfBirth(extractor.fetchString(propertyMap.get("newbusiness.lives.dateOfBirth")));
 		lifeDetails.setHeight(convertHeightInCms(extractor.fetchString(propertyMap.get("newbusiness.lives.hight"))));
@@ -480,7 +449,7 @@ public class NewBusinessPopulator {
 		mandateDetails.setBankAccountKey("");
 		mandateDetails.setBankKey("");
 		mandateDetails.setClientNumber("");
-		//mandateDetails.setEffectiveDate("2018-09-06T00:00:00.000Z");
+		// mandateDetails.setEffectiveDate("2018-09-06T00:00:00.000Z");
 		mandateDetails.setFactoringHouse("");
 		mandateDetails.setMandateId("");
 		mandateDetails.setMandateRefNumber("");
@@ -522,7 +491,7 @@ public class NewBusinessPopulator {
 		premiumRCTDetails.setRecievedFromCode("");
 		premiumRCTDetails.setRecievedFromNumber("");
 		premiumRCTDetails.getSfldetails().add(populateSFLDetails());
-		//premiumRCTDetails.setTranDate("2018-09-06T00:00:00.000Z");
+		// premiumRCTDetails.setTranDate("2018-09-06T00:00:00.000Z");
 		return premiumRCTDetails;
 	}
 
@@ -560,7 +529,7 @@ public class NewBusinessPopulator {
 
 	private SpecialTerms populateSpecialTerms() {
 		SpecialTerms specialTerms = new SpecialTerms();
-		specialTerms.getSpecialTermDetails().add(new SpecialTermDetails());
+		specialTerms.getSpecialTermDetails().add(populateSpecialTermDetails());
 		return specialTerms;
 	}
 

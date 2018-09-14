@@ -1,7 +1,5 @@
 package com.pru.flink.consumer;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -9,6 +7,7 @@ import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.TypeExtractor;
+import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
@@ -16,7 +15,8 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011;
 import org.apache.flink.util.Collector;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pru.constant.ConfigConstants;
+import com.pru.config.PropertyLoader;
+import com.pru.constant.IntegrationConstants;
 import com.pru.model.middleware.NewBusinessModel;
 import com.pru.service.ESBService;
 import com.pru.service.impl.ESBServiceImpl;
@@ -26,28 +26,13 @@ import com.pru.service.impl.ESBServiceImpl;
  *
  */
 public class FlinkJsonConsumer {
-
-	private static Properties propConfig;
-	private String BOOTSTRAP_SERVER_VALUE = propConfig.getProperty(ConfigConstants.BOOTSTRAP_SERVER);
-	private String ZOOKEEPER_CONNECT_VALUE = propConfig.getProperty(ConfigConstants.ZOOKEEPER_CONNECT);
-	private String GROUP_ID_VALUE = propConfig.getProperty(ConfigConstants.GROUP_ID);
-	private String POLICY_PROPSAL_TOPIC_VALUE = propConfig.getProperty(ConfigConstants.POLICY_PROPSAL_TOPIC);
-	private String NBS_PROPSAL_TOPIC_VALUE = propConfig.getProperty(ConfigConstants.NBS_PROPSAL_TOPIC);
-
-	static {
-		propConfig = new Properties();
-		InputStream input = null;
-		try {
-
-			input = new FileInputStream("./resources/config.properties");
-			propConfig.load(input);
-			input.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	static ParameterTool flinkPropConfig;
+	static String path;
 
 	public static void main(String[] args) {
+		loadPath(args);
+		new PropertyLoader(path);
+		flinkPropConfig = PropertyLoader.getFlinkPropConfig();
 		try {
 			System.out.println("in kafka reader main");
 			FlinkJsonConsumer flinkJsonConsumer = new FlinkJsonConsumer();
@@ -57,15 +42,18 @@ public class FlinkJsonConsumer {
 			e.printStackTrace();
 		}
 	}
-
+	private static void loadPath(String[] args) {
+		final ParameterTool params = ParameterTool.fromArgs(args);
+		path = params.get(IntegrationConstants.RESOURCE_PATH);
+	}
 	private void kafkaReader() throws Exception {
 		System.out.println("insider reader");
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(1);
 		FlinkKafkaConsumer010<String> flinkKafkaConsumer = getFlinkKafkaConsumer010();
 		DataStream<String> messageStream = env.addSource(flinkKafkaConsumer);
-		FlinkKafkaProducer011<String> myProducer = new FlinkKafkaProducer011<String>(BOOTSTRAP_SERVER_VALUE,
-				NBS_PROPSAL_TOPIC_VALUE, new SimpleStringSchema());
+		FlinkKafkaProducer011<String> myProducer = new FlinkKafkaProducer011<String>(flinkPropConfig.get(IntegrationConstants.BOOTSTRAP_SERVER),
+				flinkPropConfig.get(IntegrationConstants.NBS_PROPSAL_TOPIC), new SimpleStringSchema());
 		messageStream.flatMap(new FlatMapFunction<String, NewBusinessModel>() {
 
 			/**
@@ -100,10 +88,10 @@ public class FlinkJsonConsumer {
 
 	private FlinkKafkaConsumer010<String> getFlinkKafkaConsumer010() {
 		Properties prop = new Properties();
-		prop.setProperty(ConfigConstants.BOOTSTRAP_SERVER, BOOTSTRAP_SERVER_VALUE);
-		prop.setProperty(ConfigConstants.ZOOKEEPER_CONNECT, ZOOKEEPER_CONNECT_VALUE);
-		prop.setProperty(ConfigConstants.GROUP_ID, GROUP_ID_VALUE);
-		FlinkKafkaConsumer010<String> flinkKafkaConsumer = new FlinkKafkaConsumer010<>(POLICY_PROPSAL_TOPIC_VALUE,
+		prop.setProperty(IntegrationConstants.BOOTSTRAP_SERVER, flinkPropConfig.get(IntegrationConstants.BOOTSTRAP_SERVER));
+		prop.setProperty(IntegrationConstants.ZOOKEEPER_CONNECT, flinkPropConfig.get(IntegrationConstants.ZOOKEEPER_CONNECT));
+		prop.setProperty(IntegrationConstants.GROUP_ID, flinkPropConfig.get(IntegrationConstants.GROUP_ID));
+		FlinkKafkaConsumer010<String> flinkKafkaConsumer = new FlinkKafkaConsumer010<>(flinkPropConfig.get(IntegrationConstants.POLICY_PROPSAL_TOPIC),
 				new SimpleStringSchema(), prop);
 
 		return flinkKafkaConsumer;
