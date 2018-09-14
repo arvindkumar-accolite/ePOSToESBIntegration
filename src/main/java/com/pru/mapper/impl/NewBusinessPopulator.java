@@ -1,23 +1,15 @@
 package com.pru.mapper.impl;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.pru.constant.ConfigConstants;
 import com.pru.model.middleware.ApplyCashDetails;
 import com.pru.model.middleware.AssigneeDetails;
@@ -46,7 +38,6 @@ import com.pru.model.middleware.SFLDetails;
 import com.pru.model.middleware.SpecialTermDetails;
 import com.pru.model.middleware.SpecialTerms;
 import com.pru.translator.JsonValueExtractor;
-import com.pru.constant.IntegrationConstants;
 
 public class NewBusinessPopulator {
 	private JsonValueExtractor extractor;
@@ -254,7 +245,7 @@ public class NewBusinessPopulator {
 				contractDetails.setRegister("CA1");
 			}
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat(IntegrationConstants.CLTDOBX_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(ConfigConstants.CLTDOBX_FORMAT);
 		contractDetails.setProposalDate(sdf.format(new Date()));
 		contractDetails.setContractHDREntId("");
 		contractDetails.setContractNumber("");
